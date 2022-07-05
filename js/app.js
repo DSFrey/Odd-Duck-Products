@@ -22,7 +22,6 @@ let displaySize; // the number of products displayed at once
 **************************************************************************** */
 
 /**
- * 
  * @param {string} name - name of the product
  * @param {string} src - path and filename of the product image
  */
@@ -39,8 +38,8 @@ function ProductObjects(name,src) {
 
 function render() {
   console.log('In render()');
-  let displayItems = [];
-
+  //get random products
+  //
 }
 
 /* ****************************************************************************
@@ -93,11 +92,18 @@ function handleProductSelect(evt) {
 }
 
 /**
- * 
- * @returns - an index from the products array
+ * @returns - an array of indices from the products array
  */
-function getRandomItemIndex() {
-  return Math.floor(Math.random()*allProductsArray.length);
+function getRandomItemIndices() {
+  let displayItems = [];
+  let nextRandom = -1;
+  for (let i = 0; i < displaySize; i++) {
+    do {
+      nextRandom = Math.floor(Math.random()*allProductsArray.length);
+    } while (displayItems.includes(nextRandom));
+    displayItems.push(nextRandom);
+  }
+  return displayItems;
 }
 
 /* ****************************************************************************
