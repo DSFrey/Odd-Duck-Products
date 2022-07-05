@@ -11,7 +11,7 @@
 **************************************************************************** */
 let productSelectContainer; // HTML element for goats
 let resultButton; // a button to show results
-let displayArray; //html elements
+// let displayArray; //html elements
 let allProductsArray; // an array of product objects
 let selectionCount; // the number of user selections
 let maxSelectionCount; // the maximum number of selections
@@ -27,7 +27,7 @@ let displaySize; // the number of products displayed at once
  */
 function ProductObjects(name,src) {
   this.name = name;
-  this.image = src;
+  this.src = src;
   this.itemSelection = 0;
   this.itemOffer = 0;
 }
@@ -39,7 +39,17 @@ function ProductObjects(name,src) {
 function render() {
   console.log('In render()');
   //get random products
-  //
+  let displayItems = getRandomItemIndices();
+  console.log(displayItems);
+  // set image values
+  productSelectContainer.innerHTML = '';
+  for (let i = 0; i < displayItems.length; i++) {
+    let image = document.createElement('img');
+    image.src = allProductsArray[displayItems[i]].src;
+    image.alt = allProductsArray[displayItems[i]].name;
+    productSelectContainer.appendChild(image);
+    allProductsArray[displayItems[i]].itemOffer++;
+  }
 }
 
 /* ****************************************************************************
@@ -56,7 +66,7 @@ function initialize() {
   selectionCount = 0; // the number of user selections
   maxSelectionCount = 3; // the maximum number of selections
   displaySize = 3; // the number of products displayed at once
-  displayArray = []; //html elements
+  // displayArray = []; //html elements
   productSelectContainer = document.getElementById('productSelectContainer');
   resultButton = document.getElementById('resultButton');
   // instantiate products
