@@ -9,9 +9,8 @@
 /* ****************************************************************************
     GLOBAL VARIABLES
 **************************************************************************** */
-let productSelectContainer; // HTML element for goats
+let displayContainer; // HTML element for display of products or results
 let resultButton; // a button to show results
-// let displayArray; //html elements
 let allProductsArray; // an array of product objects
 let selectionCount; // the number of user selections
 let maxSelectionCount; // the maximum number of selections
@@ -36,20 +35,50 @@ function ProductObjects(name,src) {
     VIEW LOGIC
 **************************************************************************** */
 
+/**
+ * Displays a number of product images on the screen
+ */
 function render() {
-  console.log('In render()');
-  //get random products
   let displayItems = getRandomItemIndices();
-  console.log(displayItems);
-  // set image values
-  productSelectContainer.innerHTML = '';
+  displayContainer.innerHTML = '';
   for (let i = 0; i < displayItems.length; i++) {
     let image = document.createElement('img');
     image.src = allProductsArray[displayItems[i]].src;
     image.alt = allProductsArray[displayItems[i]].name;
-    productSelectContainer.appendChild(image);
+    displayContainer.appendChild(image);
     allProductsArray[displayItems[i]].itemOffer++;
   }
+}
+
+function renderResults() {
+  displayContainer.innerHTML = '';
+  let resultsTable = document.createElement('table');
+  let tableTopRow = document.createElement('tr');
+  let productHeader = document.createElement('th');
+  productHeader.innerText = 'Product';
+  tableTopRow.appendChild(productHeader);
+  let selectedHeader = document.createElement('th');
+  selectedHeader.innerText = 'Selected';
+  tableTopRow.appendChild(selectedHeader);
+  let offeredHeader = document.createElement('th');
+  offeredHeader.innerText = 'Offered';
+  tableTopRow.appendChild(offeredHeader);
+  resultsTable.appendChild(tableTopRow);
+  let tableRow;
+  for (let i = 0; i < allProductsArray.length; i++) {
+    tableRow = document.createElement('tr');
+    let productName = document.createElement('td');
+    productName.innerText = allProductsArray[i].name;
+    tableRow.appendChild(productName);
+    let selectedValue = document.createElement('th');
+    selectedValue.innerText = allProductsArray[i].itemSelection;
+    tableRow.appendChild(selectedValue);
+    let offeredValue = document.createElement('th');
+    offeredValue.innerText = allProductsArray[i].itemOffer;
+    tableRow.appendChild(offeredValue);
+    resultsTable.appendChild(tableRow);
+  }
+  displayContainer.appendChild(resultsTable);
 }
 
 /* ****************************************************************************
@@ -66,8 +95,7 @@ function initialize() {
   selectionCount = 0; // the number of user selections
   maxSelectionCount = 3; // the maximum number of selections
   displaySize = 3; // the number of products displayed at once
-  // displayArray = []; //html elements
-  productSelectContainer = document.getElementById('productSelectContainer');
+  displayContainer = document.getElementById('displayContainer');
   resultButton = document.getElementById('resultButton');
   // instantiate products
   allProductsArray = [];
@@ -85,20 +113,36 @@ function initialize() {
   allProductsArray.push(new ProductObjects('Pet-sweep','./img/pet-sweep.jpg'));
   allProductsArray.push(new ProductObjects('Scissors','./img/scissors.jpg'));
   allProductsArray.push(new ProductObjects('Shark','./img/shark.jpg'));
-  allProductsArray.push(new ProductObjects('Sweep','./img/sweep.jpg'));
+  allProductsArray.push(new ProductObjects('Sweep','./img/sweep.png'));
   allProductsArray.push(new ProductObjects('Tauntaun','./img/tauntaun.jpg'));
   allProductsArray.push(new ProductObjects('Unicorn','./img/unicorn.jpg'));
   allProductsArray.push(new ProductObjects('Water-can','./img/water-can.jpg'));
   allProductsArray.push(new ProductObjects('Wine-glass','./img/wine-glass.jpg'));
 
   // Set any event handlers
-  productSelectContainer.addEventListener('click', handleProductSelect);
+  displayContainer.addEventListener('click', checkProductSelect);
   // perform the initial render
   render();
 }
 
-function handleProductSelect(evt) {
+function checkProductSelect(evt) {
+  console.log('in handleProductSelect()');
+  for (let i = 0; i < allProductsArray.length; i++) {
+    if (evt.target.alt === allProductsArray[i].name) {
+      allProductsArray[i].itemSelection++;
+      handleProductSelect();
+    }
+  }
+}
 
+function handleProductSelect() {
+  selectionCount++;
+  if (selectionCount >= maxSelectionCount) {
+    displayContainer.removeEventListener('click',checkProductSelect);
+    resultButton.addEventListener('click',renderResults);
+  } else {
+    render();
+  }
 }
 
 /**
