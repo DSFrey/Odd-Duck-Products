@@ -94,7 +94,7 @@ function initialize() {
   console.log('In initialize()');
   // Get initial references to HTML elements
   selectionCount = 0; // the number of user selections
-  maxSelectionCount = 3; // the maximum number of selections
+  maxSelectionCount = 25; // the maximum number of selections
   displaySize = 3; // the number of products displayed at once
   displayContainer = document.getElementById('displayContainer');
   tableContainer = document.getElementById('tableContainer');
