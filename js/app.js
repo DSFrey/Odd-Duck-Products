@@ -10,7 +10,7 @@
     GLOBAL VARIABLES
 **************************************************************************** */
 let displayContainer; // HTML element for display of products
-let tableContainer; //HTML element for display of results
+let table; //HTML element for display of results
 let resultButton; // a button to show results
 let allProductsArray; // an array of product objects
 let selectionCount; // the number of user selections
@@ -56,7 +56,7 @@ function render() {
  * Creates a table to display the voting results
  */
 function renderResults() {
-  tableContainer.innerHTML = '';
+  table.innerHTML = '';
   let tableTopRow = document.createElement('tr');
   let productHeader = document.createElement('th');
   productHeader.innerText = 'Product';
@@ -67,7 +67,7 @@ function renderResults() {
   let offeredHeader = document.createElement('th');
   offeredHeader.innerText = 'Offered';
   tableTopRow.appendChild(offeredHeader);
-  tableContainer.appendChild(tableTopRow);
+  table.appendChild(tableTopRow);
   let tableRow;
   for (let i = 0; i < allProductsArray.length; i++) {
     tableRow = document.createElement('tr');
@@ -80,8 +80,63 @@ function renderResults() {
     let offeredValue = document.createElement('td');
     offeredValue.innerText = allProductsArray[i].itemOffer;
     tableRow.appendChild(offeredValue);
-    tableContainer.appendChild(tableRow);
+    table.appendChild(tableRow);
   }
+}
+
+function renderChart() {
+  let productNameArray = [];
+  let itemSelectionArray = [];
+  let itemOfferArray = [];
+  for (let i = 0; i < allProductsArray.length; i++) {
+    productNameArray.push(allProductsArray[i].name);
+    itemSelectionArray.push(allProductsArray[i].itemSelection);
+    itemOfferArray.push(allProductsArray[i].itemOffer);
+  }
+  const chartData = {
+    labels: productNameArray,
+    datasets: [
+      {
+        label: 'Selected',
+        data: itemSelectionArray,
+        backgroundColor: ['rgba(12,12,12,0.5'],
+        borderColor: ['rgb(0,0,0)'],
+        borderWidth: 2,
+        xAxisID: 'xS',
+        categoryPercentage: 0.85,
+      },
+      {
+        label: 'Offered',
+        data: itemOfferArray,
+        backgroundColor: ['rgba(200,200,200,0.5'],
+        borderColor: ['rgb(0,0,0)'],
+        borderWidth: 2,
+        xAxisID: 'xO',
+        categoryPercentage: 0.9,
+      }
+    ]
+  };
+  const config = {
+    type: 'bar',
+    data: chartData,
+    options: {
+      scales: {
+        xS: {
+          stacked: true,
+        },
+        xO: {
+          display: false,
+          stacked: true,
+        },
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  };
+  let canvasChart = document.getElementById('resultChart');
+  // eslint-disable-next-line no-undef
+  let resultChart = new Chart(canvasChart,config);
 }
 
 /* ****************************************************************************
@@ -91,6 +146,7 @@ function renderResults() {
 /**
  * Initialize the global variables, set up needed event handlers, and perform the initial render.
  */
+// eslint-disable-next-line no-unused-vars
 function initialize() {
   console.log('In initialize()');
   // Get initial references to HTML elements
@@ -98,7 +154,7 @@ function initialize() {
   maxSelectionCount = 25; // the maximum number of selections
   displaySize = 3; // the number of products displayed at once
   displayContainer = document.getElementById('displayContainer');
-  tableContainer = document.getElementById('tableContainer');
+  table = document.getElementById('tableContainer');
   resultButton = document.getElementById('resultButton');
   // instantiate products
   allProductsArray = [];
@@ -145,7 +201,7 @@ function handleProductSelect() {
     displayContainer.classList.add('no-voting');
     displayContainer.removeEventListener('click',checkProductSelect);
     resultButton.removeAttribute('disabled');
-    resultButton.addEventListener('click',renderResults);
+    resultButton.addEventListener('click',() => {renderResults();renderChart();});
   } else {
     render();
   }
