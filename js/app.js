@@ -10,12 +10,13 @@
     GLOBAL VARIABLES
 **************************************************************************** */
 let displayContainer; // HTML element for display of products
-let tableContainer; //HTML element for display of results
+let table; //HTML element for display of results
 let resultButton; // a button to show results
 let allProductsArray; // an array of product objects
 let selectionCount; // the number of user selections
 let maxSelectionCount; // the maximum number of selections
 let displaySize; // the number of products displayed at once
+let displayItems; // array of random indices to display
 
 /* ****************************************************************************
     PRODUCT OBJECTS (Data/Model Objects)
@@ -40,7 +41,7 @@ function ProductObjects(name,src) {
  * Displays a number of product images on the screen
  */
 function render() {
-  let displayItems = getRandomItemIndices();
+  getRandomItemIndices();
   displayContainer.innerHTML = '';
   for (let i = 0; i < displayItems.length; i++) {
     let image = document.createElement('img');
@@ -55,7 +56,7 @@ function render() {
  * Creates a table to display the voting results
  */
 function renderResults() {
-  tableContainer.innerHTML = '';
+  table.innerHTML = '';
   let tableTopRow = document.createElement('tr');
   let productHeader = document.createElement('th');
   productHeader.innerText = 'Product';
@@ -66,7 +67,7 @@ function renderResults() {
   let offeredHeader = document.createElement('th');
   offeredHeader.innerText = 'Offered';
   tableTopRow.appendChild(offeredHeader);
-  tableContainer.appendChild(tableTopRow);
+  table.appendChild(tableTopRow);
   let tableRow;
   for (let i = 0; i < allProductsArray.length; i++) {
     tableRow = document.createElement('tr');
@@ -79,8 +80,62 @@ function renderResults() {
     let offeredValue = document.createElement('td');
     offeredValue.innerText = allProductsArray[i].itemOffer;
     tableRow.appendChild(offeredValue);
-    tableContainer.appendChild(tableRow);
+    table.appendChild(tableRow);
   }
+}
+
+function renderChart() {
+  let productNameArray = [];
+  let itemSelectionArray = [];
+  let itemOfferArray = [];
+  for (let i = 0; i < allProductsArray.length; i++) {
+    productNameArray.push(allProductsArray[i].name);
+    itemSelectionArray.push(allProductsArray[i].itemSelection);
+    itemOfferArray.push(allProductsArray[i].itemOffer);
+  }
+  const chartData = {
+    labels: productNameArray,
+    datasets: [
+      {
+        label: 'Selected',
+        data: itemSelectionArray,
+        backgroundColor: ['rgba(12,12,12,0.8'],
+        borderColor: ['rgb(0,0,0)'],
+        borderWidth: 3,
+        xAxisID: 'xS',
+        categoryPercentage: 0.85,
+      },
+      {
+        label: 'Offered',
+        data: itemOfferArray,
+        backgroundColor: ['rgba(220,220,220,0.8'],
+        borderColor: ['rgb(0,0,0)'],
+        borderWidth: 2,
+        xAxisID: 'xO',
+        categoryPercentage: 0.9,
+      }
+    ]
+  };
+  const config = {
+    type: 'bar',
+    data: chartData,
+    options: {
+      scales: {
+        xO: {
+          display: false,
+        },
+        y: {
+          beginAtZero: true
+        }
+      },
+      tooltips: {
+        mode: 'point'
+      }
+    }
+  };
+  let canvasChart = document.getElementById('resultChart');
+  // eslint-disable-next-line no-undef, no-unused-vars
+  let resultChart = new Chart(canvasChart,config);
 }
 
 /* ****************************************************************************
@@ -90,6 +145,7 @@ function renderResults() {
 /**
  * Initialize the global variables, set up needed event handlers, and perform the initial render.
  */
+// eslint-disable-next-line no-unused-vars
 function initialize() {
   console.log('In initialize()');
   // Get initial references to HTML elements
@@ -97,10 +153,11 @@ function initialize() {
   maxSelectionCount = 25; // the maximum number of selections
   displaySize = 3; // the number of products displayed at once
   displayContainer = document.getElementById('displayContainer');
-  tableContainer = document.getElementById('tableContainer');
+  table = document.getElementById('tableContainer');
   resultButton = document.getElementById('resultButton');
   // instantiate products
   allProductsArray = [];
+  displayItems = [];
   allProductsArray.push(new ProductObjects('Bag','./img/bag.jpg'));
   allProductsArray.push(new ProductObjects('Banana','./img/banana.jpg'));
   allProductsArray.push(new ProductObjects('Bathroom','./img/bathroom.jpg'));
@@ -143,7 +200,7 @@ function handleProductSelect() {
     displayContainer.classList.add('no-voting');
     displayContainer.removeEventListener('click',checkProductSelect);
     resultButton.removeAttribute('disabled');
-    resultButton.addEventListener('click',renderResults);
+    resultButton.addEventListener('click',() => {renderResults();renderChart();});
   } else {
     render();
   }
@@ -153,15 +210,15 @@ function handleProductSelect() {
  * @returns - an array of indices from the products array
  */
 function getRandomItemIndices() {
-  let displayItems = [];
   let nextRandom;
+  let nextRandomArray = [];
   for (let i = 0; i < displaySize; i++) {
     do {
       nextRandom = Math.floor(Math.random()*allProductsArray.length);
-    } while (displayItems.includes(nextRandom));
-    displayItems.push(nextRandom);
+    } while (nextRandomArray.includes(nextRandom) || displayItems.includes(nextRandom));
+    nextRandomArray.push(nextRandom);
   }
-  return displayItems;
+  displayItems = nextRandomArray;
 }
 
 /* ****************************************************************************
