@@ -16,6 +16,7 @@ let allProductsArray; // an array of product objects
 let selectionCount; // the number of user selections
 let maxSelectionCount; // the maximum number of selections
 let displaySize; // the number of products displayed at once
+let displayItems; // array of random indices to display
 
 /* ****************************************************************************
     PRODUCT OBJECTS (Data/Model Objects)
@@ -40,7 +41,7 @@ function ProductObjects(name,src) {
  * Displays a number of product images on the screen
  */
 function render() {
-  let displayItems = getRandomItemIndices();
+  getRandomItemIndices();
   displayContainer.innerHTML = '';
   for (let i = 0; i < displayItems.length; i++) {
     let image = document.createElement('img');
@@ -101,6 +102,7 @@ function initialize() {
   resultButton = document.getElementById('resultButton');
   // instantiate products
   allProductsArray = [];
+  displayItems = [];
   allProductsArray.push(new ProductObjects('Bag','./img/bag.jpg'));
   allProductsArray.push(new ProductObjects('Banana','./img/banana.jpg'));
   allProductsArray.push(new ProductObjects('Bathroom','./img/bathroom.jpg'));
@@ -153,15 +155,15 @@ function handleProductSelect() {
  * @returns - an array of indices from the products array
  */
 function getRandomItemIndices() {
-  let displayItems = [];
   let nextRandom;
+  let nextRandomArray = [];
   for (let i = 0; i < displaySize; i++) {
     do {
       nextRandom = Math.floor(Math.random()*allProductsArray.length);
-    } while (displayItems.includes(nextRandom));
-    displayItems.push(nextRandom);
+    } while (nextRandomArray.includes(nextRandom) || displayItems.includes(nextRandom));
+    nextRandomArray.push(nextRandom);
   }
-  return displayItems;
+  displayItems = nextRandomArray;
 }
 
 /* ****************************************************************************
