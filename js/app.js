@@ -99,16 +99,16 @@ function renderChart() {
       {
         label: 'Selected',
         data: itemSelectionArray,
-        backgroundColor: ['rgba(12,12,12,0.5'],
+        backgroundColor: ['rgba(12,12,12,0.8'],
         borderColor: ['rgb(0,0,0)'],
-        borderWidth: 2,
+        borderWidth: 3,
         xAxisID: 'xS',
         categoryPercentage: 0.85,
       },
       {
         label: 'Offered',
         data: itemOfferArray,
-        backgroundColor: ['rgba(200,200,200,0.5'],
+        backgroundColor: ['rgba(220,220,220,0.8'],
         borderColor: ['rgb(0,0,0)'],
         borderWidth: 2,
         xAxisID: 'xO',
@@ -121,21 +121,20 @@ function renderChart() {
     data: chartData,
     options: {
       scales: {
-        xS: {
-          stacked: true,
-        },
         xO: {
           display: false,
-          stacked: true,
         },
         y: {
           beginAtZero: true
         }
+      },
+      tooltips: {
+        mode: 'point'
       }
     }
   };
   let canvasChart = document.getElementById('resultChart');
-  // eslint-disable-next-line no-undef
+  // eslint-disable-next-line no-undef, no-unused-vars
   let resultChart = new Chart(canvasChart,config);
 }
 

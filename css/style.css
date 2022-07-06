@@ -34,7 +34,7 @@ main {
   background-color: rgba(250, 235, 215, 0.85);
   margin: auto;
   display: grid;
-  grid-template: auto 2rem auto/16rem auto;
+  grid-template: auto 2rem auto/16rem 1fr;
 }
 /* Product Display */
 #displayContainer {
