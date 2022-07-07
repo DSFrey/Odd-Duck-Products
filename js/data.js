@@ -10,6 +10,7 @@ function ProductData() {
   if (localStorage.getItem('data') === null) {
     this.allProductsArray = this.initialize();
     this.selectionCount = 0;
+    console.log('is null');
   } else {
     let storedData = JSON.parse(localStorage.getItem('data'));
     this.allProductsArray = storedData.allProductsArray;

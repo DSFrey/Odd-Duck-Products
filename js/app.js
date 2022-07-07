@@ -5,14 +5,16 @@
   DESCRIPTION: Handle product data collection and display
 */
 'use strict';
-
 /* ****************************************************************************
     GLOBAL VARIABLES
 **************************************************************************** */
 let allData;
 let displayContainer; // HTML element for display of products
 let table; //HTML element for display of results
+let canvasChart; // HTML element for display of results chart
+let resultChart;
 let resultButton; // a button to show results
+let resetButton; // a button to reset the stored data
 let maxSelectionCount; // the maximum number of selections
 let displaySize; // the number of products displayed at once
 let displayItems; // array of random indices to display
@@ -40,7 +42,7 @@ function render() {
  * Creates a table to display the voting results
  */
 function renderResults() {
-  table.innerHTML = '';
+  console.log(`In renderResults ${allData.allProductsArray.length}`);
   let tableTopRow = document.createElement('tr');
   let productHeader = document.createElement('th');
   productHeader.innerText = 'Product';
@@ -65,6 +67,7 @@ function renderResults() {
     offeredValue.innerText = allData.allProductsArray[i].itemOffer;
     tableRow.appendChild(offeredValue);
     table.appendChild(tableRow);
+    console.log(`In loop ${allData.allProductsArray[i].name}`);
   }
 }
 
@@ -120,9 +123,8 @@ function renderChart() {
       }
     }
   };
-  let canvasChart = document.getElementById('resultChart');
   // eslint-disable-next-line no-undef, no-unused-vars
-  let resultChart = new Chart(canvasChart,config);
+  resultChart = new Chart(canvasChart,config);
 }
 
 /* ****************************************************************************
@@ -137,18 +139,30 @@ function initialize() {
   console.log('In initialize()');
   // eslint-disable-next-line no-undef
   allData = new ProductData(); // instantiate products
-  maxSelectionCount = 25; // the maximum number of selections
+  maxSelectionCount = 4; // the maximum number of selections
   displaySize = 3; // the number of products displayed at once
   displayItems = [];
   // Get initial references to HTML elements
   displayContainer = document.getElementById('displayContainer');
-  table = document.getElementById('tableContainer');
+  table = document.getElementById('table');
+  canvasChart = document.getElementById('resultChart');
   resultButton = document.getElementById('resultButton');
+  resetButton = document.getElementById('resetButton');
   // Set any event handlers
   displayContainer.addEventListener('click', checkProductSelect);
+  resetButton.addEventListener('click', resetData);
   // perform the initial render
   render();
   handleProductSelect();
+}
+
+function resetData() {
+  console.log('In reset');
+  localStorage.removeItem('data');
+  table.innerHTML = '';
+  resultChart.destroy();
+  displayContainer.classList.remove('no-voting');
+  initialize();
 }
 
 function checkProductSelect(evt) {
@@ -168,10 +182,17 @@ function handleProductSelect() {
     displayContainer.classList.add('no-voting');
     displayContainer.removeEventListener('click',checkProductSelect);
     resultButton.removeAttribute('disabled');
-    resultButton.addEventListener('click',() => {renderResults();renderChart();});
+    resultButton.addEventListener('click',handleResults);
   } else {
     render();
   }
+}
+
+function handleResults() {
+  resultButton.removeEventListener('click',handleResults);
+  resultButton.setAttribute('disabled',true);
+  renderResults();
+  renderChart();
 }
 
 /**
