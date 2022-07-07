@@ -30,10 +30,15 @@ function render() {
   getRandomItemIndices();
   displayContainer.innerHTML = '';
   for (let i = 0; i < displayItems.length; i++) {
+    let figure = document.createElement('figure');
     let image = document.createElement('img');
     image.src = allData.allProductsArray[displayItems[i]].src;
     image.alt = allData.allProductsArray[displayItems[i]].name;
-    displayContainer.appendChild(image);
+    figure.appendChild(image);
+    let figcaption = document.createElement('figcaption');
+    figcaption.innerText = allData.allProductsArray[displayItems[i]].name;
+    figure.appendChild(figcaption);
+    displayContainer.appendChild(figure);
     allData.allProductsArray[displayItems[i]].itemOffer++;
   }
 }
@@ -139,7 +144,7 @@ function initialize() {
   console.log('In initialize()');
   // eslint-disable-next-line no-undef
   allData = new ProductData(); // instantiate products
-  maxSelectionCount = 4; // the maximum number of selections
+  maxSelectionCount = 25; // the maximum number of selections
   displaySize = 3; // the number of products displayed at once
   displayItems = [];
   // Get initial references to HTML elements
