@@ -8,7 +8,7 @@
 
 function ProductData() {
   if (localStorage.getItem('data') === null) {
-    this.allProductsArray = ProductObjects.initialize();
+    this.allProductsArray = this.initialize();
     this.selectionCount = 0;
   } else {
     let storedData = JSON.parse(localStorage.getItem('data'));
@@ -17,26 +17,15 @@ function ProductData() {
   }
 }
 
-/* ****************************************************************************
-    PRODUCT OBJECTS (Data/Model Objects)
-**************************************************************************** */
+ProductData.prototype.update = function() {
+  let storedData = {'allProductsArray': this.allProductsArray,'selectionCount': this.selectionCount};
+  localStorage.setItem('data',JSON.stringify(storedData));
+};
 
 /**
- * @param {string} name - name of the product
- * @param {string} src - path and filename of the product image
- */
-function ProductObjects(name,src) {
-  this.name = name;
-  this.src = src;
-  this.itemSelection = 0;
-  this.itemOffer = 0;
-}
-
-/**
- * 
  * @returns Array of all product objects
  */
-ProductObjects.prototype.initialize = function() {
+ProductData.prototype.initialize = function() {
   let allProductsArray = [];
   allProductsArray.push(new ProductObjects('Bag','./img/bag.jpg'));
   allProductsArray.push(new ProductObjects('Banana','./img/banana.jpg'));
@@ -58,4 +47,19 @@ ProductObjects.prototype.initialize = function() {
   allProductsArray.push(new ProductObjects('Water-can','./img/water-can.jpg'));
   allProductsArray.push(new ProductObjects('Wine-glass','./img/wine-glass.jpg'));
   return allProductsArray;
+};
+
+/* ****************************************************************************
+    PRODUCT OBJECTS (Data/Model Objects)
+**************************************************************************** */
+
+/**
+ * @param {string} name - name of the product
+ * @param {string} src - path and filename of the product image
+ */
+function ProductObjects(name,src) {
+  this.name = name;
+  this.src = src;
+  this.itemSelection = 0;
+  this.itemOffer = 0;
 }
