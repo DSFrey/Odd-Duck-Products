@@ -2,7 +2,7 @@
   FILE: app.js
   DATE: 2022-07-05
   AUTHOR: DSFrey
-  DESCRIPTOION: handle the clicking of goats.
+  DESCRIPTION: Handle product data collection and display
 */
 'use strict';
 
@@ -12,8 +12,6 @@
 let displayContainer; // HTML element for display of products
 let table; //HTML element for display of results
 let resultButton; // a button to show results
-let allProductsArray; // an array of product objects
-let selectionCount; // the number of user selections
 let maxSelectionCount; // the maximum number of selections
 let displaySize; // the number of products displayed at once
 let displayItems; // array of random indices to display
