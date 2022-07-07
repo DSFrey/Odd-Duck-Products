@@ -34,11 +34,11 @@ main {
   background-color: rgba(250, 235, 215, 0.85);
   margin: auto;
   display: grid;
-  grid-template: auto 2rem auto/16rem 1fr;
+  grid-template: auto 2rem auto/16rem 1fr 16rem;
 }
 /* Product Display */
 #displayContainer {
-  grid-area: 1/2/3/3;
+  grid-area: 1/2/3/4;
   padding: 2rem;
   display: flex;
   flex-wrap: wrap;
@@ -58,9 +58,15 @@ main {
   border: 5px solid transparent;
   cursor: auto;
 }
+#displayContainer figcaption {
+  text-align: center;
+}
 /* Data Display */
 #resultButton {
   grid-area: 2/1/3/2;
+}
+#resetButton {
+  grid-area: 2/3/3/4;
 }
 #tableContainer {
   grid-area: 1/1/2/2;
@@ -76,6 +82,6 @@ td, th {
   text-align: right;
 }
 #chartContainer {
-    grid-area: 3/1/4/3;
+    grid-area: 3/1/4/4;
     padding: 1rem;
 }
