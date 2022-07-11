@@ -6,18 +6,27 @@
 */
 'use strict';
 
+/* ****************************************************************************
+    DATA CREATION AND HANDLING
+**************************************************************************** */
+
+/**
+ * Constructor to contain all data for the page.
+ * Tries to load from local storage, creates default if nothing found.
+ */
 function ProductData() {
   if (localStorage.getItem('data') === null) {
     this.allProductsArray = this.initialize();
     this.selectionCount = 0;
-    console.log('is null');
   } else {
     let storedData = JSON.parse(localStorage.getItem('data'));
     this.allProductsArray = storedData.allProductsArray;
     this.selectionCount = storedData.selectionCount;
   }
 }
-
+/**
+ * Updates local storage with new data
+ */
 ProductData.prototype.update = function() {
   let storedData = {'allProductsArray': this.allProductsArray,'selectionCount': this.selectionCount};
   localStorage.setItem('data',JSON.stringify(storedData));
@@ -64,3 +73,7 @@ function ProductObjects(name,src) {
   this.itemSelection = 0;
   this.itemOffer = 0;
 }
+
+/* ****************************************************************************
+    END OF FILE
+**************************************************************************** */

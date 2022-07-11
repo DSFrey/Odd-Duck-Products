@@ -8,11 +8,11 @@
 /* ****************************************************************************
     GLOBAL VARIABLES
 **************************************************************************** */
-let allData;
+let allData; // Object containing all product data
 let displayContainer; // HTML element for display of products
 let table; //HTML element for display of results
 let canvasChart; // HTML element for display of results chart
-let resultChart;
+let resultChart; // chart produced by chart.js
 let resultButton; // a button to show results
 let resetButton; // a button to reset the stored data
 let maxSelectionCount; // the maximum number of selections
@@ -47,7 +47,6 @@ function render() {
  * Creates a table to display the voting results
  */
 function renderResults() {
-  console.log(`In renderResults ${allData.allProductsArray.length}`);
   let tableTopRow = document.createElement('tr');
   let productHeader = document.createElement('th');
   productHeader.innerText = 'Product';
@@ -72,7 +71,6 @@ function renderResults() {
     offeredValue.innerText = allData.allProductsArray[i].itemOffer;
     tableRow.appendChild(offeredValue);
     table.appendChild(tableRow);
-    console.log(`In loop ${allData.allProductsArray[i].name}`);
   }
 }
 
@@ -128,7 +126,6 @@ function renderChart() {
       }
     }
   };
-  // eslint-disable-next-line no-undef, no-unused-vars
   resultChart = new Chart(canvasChart,config);
 }
 
@@ -139,10 +136,7 @@ function renderChart() {
 /**
  * Initialize the global variables, set up needed event handlers, and perform the initial render.
  */
-// eslint-disable-next-line no-unused-vars
 function initialize() {
-  console.log('In initialize()');
-  // eslint-disable-next-line no-undef
   allData = new ProductData(); // instantiate products
   maxSelectionCount = 25; // the maximum number of selections
   displaySize = 3; // the number of products displayed at once
@@ -150,7 +144,7 @@ function initialize() {
   // Get initial references to HTML elements
   displayContainer = document.getElementById('displayContainer');
   table = document.getElementById('table');
-  canvasChart = document.getElementById('resultChart');
+  canvasChart = document.getElementById('canvasChart');
   resultButton = document.getElementById('resultButton');
   resetButton = document.getElementById('resetButton');
   // Set any event handlers
@@ -160,18 +154,21 @@ function initialize() {
   render();
   handleProductSelect();
 }
-
+/**
+ * Remove stored data and displyed results, then re-initialize
+ */
 function resetData() {
-  console.log('In reset');
   localStorage.removeItem('data');
   table.innerHTML = '';
   resultChart.destroy();
   displayContainer.classList.remove('no-voting');
   initialize();
 }
-
+/**
+ * Checks to see what product was selected, records counts, and saves to loval storage
+ * @param {object} evt - click registered by event handler
+ */
 function checkProductSelect(evt) {
-  console.log('in handleProductSelect()');
   for (let i = 0; i < allData.allProductsArray.length; i++) {
     if (evt.target.alt === allData.allProductsArray[i].name) {
       allData.allProductsArray[i].itemSelection++;
@@ -181,7 +178,9 @@ function checkProductSelect(evt) {
     }
   }
 }
-
+/**
+ * Checks if max votes have been recorded, then renders the next round of options or disables voting and enables display of results
+ */
 function handleProductSelect() {
   if (allData.selectionCount >= maxSelectionCount) {
     displayContainer.classList.add('no-voting');
@@ -192,7 +191,9 @@ function handleProductSelect() {
     render();
   }
 }
-
+/**
+ * Calls both table and chart render functions and disables results button
+ */
 function handleResults() {
   resultButton.removeEventListener('click',handleResults);
   resultButton.setAttribute('disabled',true);
